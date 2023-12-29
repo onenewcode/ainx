@@ -1,4 +1,4 @@
-package anet
+package config
 
 import (
 	"ainx/ainterface"
@@ -17,6 +17,9 @@ type Server struct {
 	IP string
 	// 设置端口号
 	Port string
+	//当前Server由用户绑定的回调router,也就是Server注册的链接对应的处理业务
+	Router ainterface.IRouter
+	//todo 未来目标提供更多option字段来控制server实例化
 }
 
 // ============== 定义当前客户端链接的handle api ===========

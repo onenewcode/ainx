@@ -1,4 +1,4 @@
-package anet
+package config
 
 import (
 	"ainx/ainterface"
