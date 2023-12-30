@@ -1,4 +1,4 @@
-package config
+package anet
 
 import (
 	"ainx/ainterface"
@@ -13,19 +13,26 @@ type Connection struct {
 	ConnID uint32
 	// 当前链接的关闭状态
 	isClosed bool
-	// 处理该链接方法的API
-	handleAPI ainterface.HandFunc
+
+	//该连接的处理方法router
+	Router ainterface.IRouter
+
 	// 告知该链接已经退出/停止的channel
 	ExitBuffChan chan bool
 }
 
+func (c *Connection) GetConnection() net.Conn {
+
+	return c.Conn
+}
+
 // 创建链接的方法
-func NewConnection(conn *net.TCPConn, connID uint32, callback_api ainterface.HandFunc) *Connection {
+func NewConnection(conn *net.TCPConn, connID uint32, router ainterface.IRouter) *Connection {
 	c := &Connection{
 		Conn:         conn,
 		ConnID:       connID,
 		isClosed:     false,
-		handleAPI:    callback_api,
+		Router:       router,
 		ExitBuffChan: make(chan bool, 1),
 	}
 	return c
@@ -33,25 +40,31 @@ func NewConnection(conn *net.TCPConn, connID uint32, callback_api ainterface.Han
 
 // 处理conn读数据的Goroutine
 func (c *Connection) StartReader() {
-	fmt.Println("Reader Goroutine is running")
-	defer fmt.Println(c.RemoteAddr().String(), "conn reader exit!")
+	fmt.Println("Reader Goroutine is  running")
+	defer fmt.Println(c.RemoteAddr().String(), " conn reader exit!")
 	defer c.Stop()
+
 	for {
+		//读取我们最大的数据到buf中
 		buf := make([]byte, 512)
-		cnt, err := c.Conn.Read(buf)
-		// 读取数据失败，退出连接
+		_, err := c.Conn.Read(buf)
 		if err != nil {
 			fmt.Println("recv buf err ", err)
 			c.ExitBuffChan <- true
 			continue
 		}
-		// 调用当前业务链（这里执行的是当前conn的绑定的handle方法）
-		if err := c.handleAPI(c.Conn, buf, cnt); err != nil {
-			fmt.Println("connID ", c.ConnID, "handle is err")
-			c.ExitBuffChan <- true
-			return
+		//得到当前客户端请求的Request数据
+		req := Request{
+			conn: c,
+			data: buf,
 		}
-
+		//从路由Routers 中找到注册绑定Conn的对应Handle
+		go func(request ainterface.IRequest) {
+			//执行注册的路由方法
+			c.Router.PreHandle(request)
+			c.Router.Handle(request)
+			c.Router.PostHandle(request)
+		}(&req)
 	}
 }
 

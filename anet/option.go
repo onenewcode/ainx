@@ -1,4 +1,4 @@
-package config
+package anet
 
 import (
 	"ainx/config"

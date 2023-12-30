@@ -6,5 +6,5 @@ IRequest 接口
 */
 type IRequest interface {
 	GetConnection() IConnection //获取请求链接信息
-	GetDate() []byte            //获取请求消息的数据
+	GetData() []byte            //获取请求消息的数据
 }
