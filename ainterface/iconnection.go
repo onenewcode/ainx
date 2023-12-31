@@ -10,7 +10,8 @@ type IConnection interface {
 	//从当前连接获取原始的socket TCPConn GetTCPConnection() *net.TCPConn //获取当前连接ID
 	GetConnID() uint32       //获取远程客户端地址信息 RemoteAddr() net.Addr
 	GetConnection() net.Conn //  (从当前连接获取原始的socket TCPConn)
-
+	//直接将Message数据发送数据给远程的TCP客户端
+	SendMsg(msgId uint32, data []byte) error
 }
 
 // 定义⼀一个统⼀一处理理链接业务的接⼝口
