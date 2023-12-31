@@ -2,6 +2,7 @@ package anet
 
 import (
 	"ainx/ainterface"
+	"ainx/utils"
 	"errors"
 	"fmt"
 	"net"
@@ -99,11 +100,14 @@ func (s *Server) AddRouter(router ainterface.IRouter) {
 创建一个服务器句柄
 */
 func NewServer(name string) ainterface.IServer {
+	//先初始化全局配置文件
+	utils.GlobalSetting.Reload()
+
 	s := &Server{
-		Name:      name,
+		Name:      utils.GlobalSetting.Name, //从全局参数获取
 		IPVersion: "tcp4",
-		IP:        "0.0.0.0",
-		Port:      "8080",
+		IP:        utils.GlobalSetting.Host,    //从全局参数获取
+		Port:      utils.GlobalSetting.TcpPort, //从全局参数获取
 		Router:    nil,
 	}
 	return s

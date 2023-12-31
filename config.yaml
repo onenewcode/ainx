@@ -1,0 +1,6 @@
+Name:          AinxServerApp
+Version:       V0.4
+TcpPort:       8080
+Host:          127.0.0.1
+MaxConn:       12000
+MaxPacketSize: 4096
