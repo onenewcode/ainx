@@ -26,7 +26,7 @@ func main() {
 	for {
 		//发封包message消息
 		dp := anet.NewDataPack()
-		msg, _ := dp.Pack(anet.NewMsgPackage(0, []byte("Ainx V0.5 Client Test Message")))
+		msg, _ := dp.Pack(anet.NewMsgPackage(0, []byte("Ainx V0.6 Client0 Test Message")))
 		_, err := conn.Write(msg)
 		if err != nil {
 			fmt.Println("write error err ", err)

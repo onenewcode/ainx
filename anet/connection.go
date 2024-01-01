@@ -16,8 +16,8 @@ type Connection struct {
 	// 当前链接的关闭状态
 	isClosed bool
 
-	//该连接的处理方法router
-	Router ainterface.IRouter
+	//消息管理MsgId和对应处理方法的消息管理模块
+	MsgHandler ainterface.IMsgHandle
 
 	// 告知该链接已经退出/停止的channel
 	ExitBuffChan chan bool
@@ -29,12 +29,12 @@ func (c *Connection) GetConnection() net.Conn {
 }
 
 // 创建链接的方法
-func NewConnection(conn *net.TCPConn, connID uint32, router ainterface.IRouter) *Connection {
+func NewConnection(conn *net.TCPConn, connID uint32, msgHandler ainterface.IMsgHandle) *Connection {
 	c := &Connection{
 		Conn:         conn,
 		ConnID:       connID,
 		isClosed:     false,
-		Router:       router,
+		MsgHandler:   msgHandler,
 		ExitBuffChan: make(chan bool, 1),
 	}
 	return c
@@ -84,12 +84,7 @@ func (c *Connection) StartReader() {
 			msg:  msg, //将之前的buf 改成 msg
 		}
 		//从路由Routers 中找到注册绑定Conn的对应Handle
-		go func(request ainterface.IRequest) {
-			//执行注册的路由方法
-			c.Router.PreHandle(request)
-			c.Router.Handle(request)
-			c.Router.PostHandle(request)
-		}(&req)
+		go c.MsgHandler.DoMsgHandler(&req)
 	}
 }
 
