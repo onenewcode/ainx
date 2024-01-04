@@ -42,6 +42,8 @@ func (s *Server) Start() {
 	// 开启一个go去做服务端的Listener业务
 	// todo 未来目标是提供更多协议，可以利用if或者switch对IPVersion进行判断而选择采取哪种协议，下面整个方法要重写
 	go func() {
+		//0 启动worker工作池机制
+		s.msgHandler.StartWorkerPool()
 		//1 获取一个TCP的Addr
 		addr, err := net.ResolveTCPAddr(s.IPVersion, s.IP+":"+s.Port)
 		if err != nil {
@@ -99,9 +101,9 @@ func (s *Server) AddRouter(msgId uint32, router ainterface.IRouter) {
 /*
 创建一个服务器句柄
 */
-func NewServer() ainterface.IServer {
+func NewServer(path string) ainterface.IServer {
 	//先初始化全局配置文件
-	utils.GlobalSetting.Reload()
+	utils.GlobalSetting.Reload(path)
 
 	s := &Server{
 		Name:       utils.GlobalSetting.Name, //从全局参数获取
