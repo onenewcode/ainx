@@ -101,9 +101,9 @@ func (s *Server) AddRouter(msgId uint32, router ainterface.IRouter) {
 /*
 创建一个服务器句柄
 */
-func NewServer(path string) ainterface.IServer {
+func NewServer() ainterface.IServer {
 	//先初始化全局配置文件
-	utils.GlobalSetting.Reload(path)
+	utils.GlobalSetting.Reload()
 
 	s := &Server{
 		Name:       utils.GlobalSetting.Name, //从全局参数获取

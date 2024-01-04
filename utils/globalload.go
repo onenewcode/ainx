@@ -35,12 +35,12 @@ type GlobalSet struct {
 
 // todo 未来支持多种配置文件格式
 // 读取用户的配置文件
-func (g *GlobalSet) Reload(path string) {
+func (g *GlobalSet) Reload() {
 	vp := viper.New() //创建viper对象
 	//vp.SetConfigName("config") //配置文件的名称
 	//vp.AddConfigPath("./")
 	//vp.SetConfigType("yaml") //配置文件的拓展名
-	vp.SetConfigFile(path)
+	vp.SetConfigFile(GlobalSetting.ConfFilePath)
 	err := vp.ReadInConfig() //读取配置文件的内容
 	if err != nil {
 		panic(err)

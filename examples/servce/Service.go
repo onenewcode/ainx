@@ -41,7 +41,7 @@ func (this *HelloZinxRouter) Handle(request ainterface.IRequest) {
 
 func main() {
 	//创建一个server句柄
-	s := anet.NewServer("./config.yaml")
+	s := anet.NewServer()
 
 	//配置路由
 	s.AddRouter(0, &PingRouter{})
