@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"sync"
 )
 
 type Connection struct {
@@ -27,6 +28,12 @@ type Connection struct {
 	//无缓冲管道，用于读、写两个goroutine之间的消息通信
 	msgChan     chan []byte
 	msgBuffChan chan []byte //定义缓冲消息队列大小
+	// ================================
+	//链接属性
+	property map[string]interface{}
+	//保护链接属性修改的锁
+	propertyLock sync.RWMutex
+	// ================================
 }
 
 func (c *Connection) GetConnection() net.Conn {
@@ -45,6 +52,7 @@ func NewConnection(server ainterface.IServer, conn *net.TCPConn, connID uint32, 
 		ExitBuffChan: make(chan bool),
 		msgChan:      make(chan []byte),                                    //msgChan初始化
 		msgBuffChan:  make(chan []byte, utils.GlobalSetting.MaxMsgChanLen), //不要忘记初始化
+		property:     make(map[string]interface{}),                         //对链接属性map初始化
 	}
 	//将新创建的Conn添加到链接管理中
 	c.TcpServer.GetConnMgr().Add(c) //将当前新创建的连接添加到ConnManager中
@@ -231,4 +239,32 @@ func (c *Connection) GetConnID() uint32 {
 // 获取远程客户端地址信息
 func (c *Connection) RemoteAddr() net.Addr {
 	return c.Conn.RemoteAddr()
+}
+
+// 设置链接属性
+func (c *Connection) SetProperty(key string, value interface{}) {
+	c.propertyLock.Lock()
+	defer c.propertyLock.Unlock()
+
+	c.property[key] = value
+}
+
+// 获取链接属性
+func (c *Connection) GetProperty(key string) (interface{}, error) {
+	c.propertyLock.RLock()
+	defer c.propertyLock.RUnlock()
+
+	if value, ok := c.property[key]; ok {
+		return value, nil
+	} else {
+		return nil, errors.New("no property found")
+	}
+}
+
+// 移除链接属性
+func (c *Connection) RemoveProperty(key string) {
+	c.propertyLock.Lock()
+	defer c.propertyLock.Unlock()
+
+	delete(c.property, key)
 }

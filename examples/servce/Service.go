@@ -33,7 +33,7 @@ func (this *HelloZinxRouter) Handle(request ainterface.IRequest) {
 	//先读取客户端的数据，再回写ping...ping...ping
 	fmt.Println("recv from client : msgId=", request.GetMsgID(), ", data=", string(request.GetData()))
 
-	err := request.GetConnection().SendBuffMsg(1, []byte("Hello Zinx Router V0.8"))
+	err := request.GetConnection().SendBuffMsg(1, []byte("Hello Zinx Router V0.10"))
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -42,6 +42,13 @@ func (this *HelloZinxRouter) Handle(request ainterface.IRequest) {
 // 创建连接的时候执行
 func DoConnectionBegin(conn ainterface.IConnection) {
 	fmt.Println("DoConnecionBegin is Called ... ")
+
+	//=============设置两个链接属性，在连接创建之后===========
+	fmt.Println("Set conn Name, Home done!")
+	conn.SetProperty("Name", "Aceld")
+	conn.SetProperty("Home", "https://www.jianshu.com/u/35261429b7f1")
+	//===================================================
+
 	err := conn.SendMsg(2, []byte("DoConnection BEGIN..."))
 	if err != nil {
 		fmt.Println(err)
@@ -50,6 +57,16 @@ func DoConnectionBegin(conn ainterface.IConnection) {
 
 // 连接断开的时候执行
 func DoConnectionLost(conn ainterface.IConnection) {
+	//============在连接销毁之前，查询conn的Name，Home属性=====
+	if name, err := conn.GetProperty("Name"); err == nil {
+		fmt.Println("Conn Property Name = ", name)
+	}
+
+	if home, err := conn.GetProperty("Home"); err == nil {
+		fmt.Println("Conn Property Home = ", home)
+	}
+	//===================================================
+
 	fmt.Println("DoConneciotnLost is Called ... ")
 }
 
