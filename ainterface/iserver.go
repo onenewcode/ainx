@@ -20,5 +20,4 @@ type IServer interface {
 	CallOnConnStart(conn IConnection)
 	//调用连接OnConnStop Hook函数
 	CallOnConnStop(conn IConnection)
-	// todo 路由分组 未来目标 添加类似hertz Group分组，为每个链接分组
 }

@@ -22,10 +22,9 @@ type Server struct {
 	msgHandler ainterface.IMsgHandle
 	//当前Server的链接管理器
 	ConnMgr ainterface.IConnManager
-	//todo 未来目标提供更多option字段来控制server实例化
+
 	// =======================
 	//新增两个hook函数原型
-
 	//该Server的连接创建时Hook函数
 	OnConnStart func(conn ainterface.IConnection)
 	//该Server的连接断开时的Hook函数
@@ -55,7 +54,6 @@ func (s *Server) Start() {
 		utils.GlobalSetting.MaxPacketSize)
 
 	// 开启一个go去做服务端的Listener业务
-	// todo 未来目标是提供更多协议，可以利用if或者switch对IPVersion进行判断而选择采取哪种协议，下面整个方法要重写
 	go func() {
 		//0 启动worker工作池机制
 		s.msgHandler.StartWorkerPool()
@@ -73,7 +71,6 @@ func (s *Server) Start() {
 		}
 		//	  已经成功监听
 		fmt.Println("start Ainx server  ", s.Name, " success, now listenning...")
-
 		//TODO server.go 应该有一个自动生成ID的方法
 		var cid uint32
 		cid = 0

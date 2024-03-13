@@ -37,6 +37,7 @@ func (mh *MsgHandle) DoMsgHandler(request ainterface.IRequest) {
 }
 
 // 为消息添加具体的处理逻辑
+// msgId
 func (mh *MsgHandle) AddRouter(msgId uint32, router ainterface.IRouter) {
 	//1 判断当前msg绑定的API处理方法是否已经存在
 	if _, ok := mh.Apis[msgId]; ok {
@@ -74,7 +75,7 @@ func (mh *MsgHandle) StartWorkerPool() {
 
 /*
 将消息交给TaskQueue,由worker进行处理
-todo 未来提供更多的方法策略，目前只能采用 轮询的平均分配法则
+目前采用轮询法则
 */
 func (mh *MsgHandle) SendMsgToTaskQueue(request ainterface.IRequest) {
 	//根据ConnID来分配当前的连接应该由哪个worker负责处理

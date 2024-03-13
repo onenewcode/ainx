@@ -130,6 +130,7 @@ func (c *Connection) StartReader() {
 				continue
 			}
 		}
+		// 构建消息实体
 		msg.SetData(data)
 
 		//得到当前客户端请求的Request数据

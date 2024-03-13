@@ -9,5 +9,4 @@ type IConnManager interface {
 	Get(connID uint32) (IConnection, error) //利用ConnID获取链接
 	Len() int                               //获取当前连接
 	ClearConn()                             //删除并停止所有链接
-
 }

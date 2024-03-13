@@ -42,7 +42,7 @@ func (connMgr *ConnManager) Remove(conn ainterface.IConnection) {
 	connMgr.connLock.Lock()
 	defer connMgr.connLock.Unlock()
 
-	//删除连接信息
+	//删除对应的连接信息
 	delete(connMgr.connections, conn.GetConnID())
 
 	fmt.Println("connection Remove ConnID=", conn.GetConnID(), " successfully: conn num = ", connMgr.Len())

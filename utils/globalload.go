@@ -8,20 +8,20 @@ import (
 
 /*
 存储一切有关Zinx框架的全局参数，供其他模块使用
-一些参数也可以通过 用户根据 zinx.json来配置
+一些参数也可以通过 用户根据 Ainx.json来配置
 */
 type GlobalSet struct {
 	/*
 		服务器配置
 	*/
-	TcpServer ainterface.IServer //当前Zinx的全局Server对象
+	TcpServer ainterface.IServer //当前Ainx的全局Server对象
 	Host      string             //当前服务器主机IP
 	TcpPort   string             //当前服务器主机监听端口号
 	Name      string             //当前服务器名称
 	/*
 		Ainx配置
 	*/
-	Version          string //当前Zinx版本号
+	Version          string //当前Ainx版本号
 	MaxPacketSize    uint32 //都需数据包的最大值
 	MaxConn          int    //当前服务器主机允许的最大链接个数
 	WorkerPoolSize   uint32 //业务工作Worker池的数量
